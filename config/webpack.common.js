@@ -1,6 +1,5 @@
 module.exports = {
   resolve: {
-    // 定义 import 引用时可省略的文件后缀名
     extensions: [".js", ".jsx", ".ts", ".tsx"],
   },
   module: {
@@ -9,14 +8,14 @@ module.exports = {
         test: /\.svg$/,
         loader: "file-loader",
         options: {
-          outputPath: "assets", // 打包后资源存放的目录
+          outputPath: "assets",
         },
       },
       {
         test: /\.(woff|woff2|eot|ttf|otf)$/,
         loader: "file-loader",
         options: {
-          outputPath: "assets", // 打包后资源存放的目录
+          outputPath: "assets",
         },
       },
       {

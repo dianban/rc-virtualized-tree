@@ -18,9 +18,13 @@ module.exports = merge(common, {
     rules: [
       {
         test: /\.(scss|css)$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
-      }
+        use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
+      },
     ],
+  },
+  externals: {
+    react: "react",
+    "react-dom": "react-dom",
   },
   plugins: [new CleanWebpackPlugin(), new MiniCssExtractPlugin()],
 });

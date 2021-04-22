@@ -1,5 +1,5 @@
 import React from "react";
 import ReactDom from "react-dom";
-import App from "../src/app";
+import { VirtualizedTree } from "../src";
 
-ReactDom.render(<App />, document.getElementById("app"));
+ReactDom.render(<VirtualizedTree />, document.getElementById("app"));
