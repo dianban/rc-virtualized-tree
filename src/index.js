@@ -1,4 +1,4 @@
 import "./index.scss";
-import { VirtualizedTree } from "./components/virtualized-tree";
-
-export default VirtualizedTree;
+export * from "./lib";
+export * from "./components/list";
+export * from "./components/virtualized-tree";

@@ -1,0 +1,14 @@
+.list {
+  height: 100%;
+  .list-item {
+    &:focus {
+      outline: none;
+    }
+  }
+
+  .list-grid {
+    &:focus {
+      outline: none;
+    }
+  }
+}
