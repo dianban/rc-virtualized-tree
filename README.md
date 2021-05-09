@@ -1,5 +1,11 @@
 ## Virtualized Tree
 
+### Getting Started
+
+```
+npm install rc-virtualized-tree --save
+```
+
 ### Prop Types
 
 | Property            | Type                                      | Required? | Description                                          | Default |
