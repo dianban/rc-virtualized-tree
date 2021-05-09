@@ -3,8 +3,8 @@ import { ReactNode } from "react";
 import classNames from "classnames";
 import { arrayEquals, Debounce, shallowEquals, Throttled } from "../../lib";
 import { List } from "../list";
-import { Mark } from "../mark";
 import { Icon, Symbol } from "../icon";
+import { Highlight } from "../highlight.tsx/highlight";
 
 const DefaultSearchKey = "name";
 const IconExpandWidth = 16;
@@ -14,7 +14,7 @@ export interface ITreeDataItem<T> {
   readonly key: string;
   readonly name: string;
   readonly isLeaf: boolean;
-  readonly children: ReadonlyArray<T>;
+  readonly children?: ReadonlyArray<T>;
 }
 
 interface ITreeListItem<T extends ITreeDataItem<T>> {
@@ -61,6 +61,8 @@ interface IProps<T> {
 interface IState<T extends ITreeDataItem<T>> {
   readonly treeList: ReadonlyArray<ITreeListItem<T>>;
   readonly sExpandedKeys: ReadonlyArray<string>;
+  readonly dragSelectedItem: T | null;
+  readonly dropSelectedItem: T | null;
 }
 
 export class VirtualizedTree<
@@ -68,6 +70,7 @@ export class VirtualizedTree<
 > extends React.Component<IProps<T>, IState<T>> {
   private readonly updateListThrottled = new Throttled(200);
   private readonly updateListDebounce = new Debounce(250);
+  private readonly clickDebounce = new Debounce(250);
 
   public static defaultProps = {
     expandedKeys: [],
@@ -87,6 +90,8 @@ export class VirtualizedTree<
     this.state = {
       treeList: [],
       sExpandedKeys: [],
+      dragSelectedItem: null,
+      dropSelectedItem: null,
     };
   }
 
@@ -116,7 +121,10 @@ export class VirtualizedTree<
     snapshot?: any
   ): void {
     // 传入的searchKeywords更新时，重置列表
-    if (prevProps.searchKeywords !== this.props.searchKeywords) {
+    if (
+      prevProps.searchKeywords !== this.props.searchKeywords ||
+      prevProps.searchOnlyShowMatch !== this.props.searchOnlyShowMatch
+    ) {
       // 有符合条件的节点展开，没有的节点收起，使用forSearchKey过滤，没有该字段的默认使用name进行过滤
       this.updateListDebounce.queue(() => {
         this.updateTreeListAndKeys(
@@ -318,7 +326,6 @@ export class VirtualizedTree<
     treeData: ReadonlyArray<T>,
     expandedKeys: ReadonlyArray<string>
   ) => {
-    console.log("updateTreeList");
     // 根据 treeData 和 expandedKeys 计算展示节点
     const keywords = this.props.searchKeywords?.toLowerCase();
     const list = this.getList(
@@ -425,7 +432,13 @@ export class VirtualizedTree<
       defaultFolderIcon,
       defaultLeafIcon,
     } = this.props;
-    const { treeList, sExpandedKeys } = this.state;
+
+    const {
+      treeList,
+      sExpandedKeys,
+      dragSelectedItem,
+      dropSelectedItem,
+    } = this.state;
 
     const { item, level } = treeList[row];
     // 展开、收起
@@ -466,12 +479,16 @@ export class VirtualizedTree<
     const onClick = (event: React.MouseEvent<HTMLDivElement>) => {
       event.stopPropagation();
       if (this.props.onItemClick) {
-        this.props.onItemClick(item);
+        this.clickDebounce.queue(() => {
+          this.props.onItemClick(item);
+        });
       }
     };
+
     const onDoubleClick = (event: React.MouseEvent<HTMLDivElement>) => {
       event.stopPropagation();
       if (this.props.onItemDoubleClick) {
+        this.clickDebounce.clear();
         this.props.onItemDoubleClick(item);
       }
     };
@@ -483,32 +500,44 @@ export class VirtualizedTree<
       }
     };
 
-    // const onDragStart = (event: React.MouseEvent<HTMLDivElement>) => {
-    //   event.stopPropagation();
-    //   setTimeout(() => {
-    //     this.setState({ dragSelectedItem: item });
-    //   });
-    // };
-    //
-    // const onDragEnd = (event: React.MouseEvent<HTMLDivElement>) => {
-    //   event.stopPropagation();
-    //   this.setState({ dragSelectedItem: null, dropSelectedItem: null });
-    // };
-    //
-    // const onDragEnter = (event: React.MouseEvent<HTMLDivElement>) => {
-    //   event.stopPropagation();
-    //   this.setState({ dropSelectedItem: item });
-    // };
-    //
-    // const onDrop = (event: React.MouseEvent<HTMLDivElement>) => {
-    //   event.stopPropagation();
-    //   if (this.props.onDragAndDrop) {
-    //     const { dragSelectedItem, dropSelectedItem } = this.state;
-    //     if (dragSelectedItem !== null && dropSelectedItem !== null) {
-    //       this.props.onDragAndDrop(dragSelectedItem, dropSelectedItem);
-    //     }
-    //   }
-    // };
+    let onDragStart = null;
+    let onDragEnd = null;
+    let onDragEnter = null;
+    let onDragOver = null;
+    let onDrop = null;
+
+    if (itemDraggable) {
+      onDragStart = (event: React.MouseEvent<HTMLDivElement>) => {
+        event.stopPropagation();
+        setTimeout(() => {
+          this.setState({ dragSelectedItem: item });
+        });
+      };
+
+      onDragEnd = (event: React.MouseEvent<HTMLDivElement>) => {
+        event.stopPropagation();
+        this.setState({ dragSelectedItem: null, dropSelectedItem: null });
+      };
+
+      onDragEnter = (event: React.MouseEvent<HTMLDivElement>) => {
+        event.stopPropagation();
+        this.setState({ dropSelectedItem: item });
+      };
+
+      onDragOver = (event: React.MouseEvent<HTMLDivElement>) => {
+        event.preventDefault();
+      };
+
+      onDrop = (event: React.MouseEvent<HTMLDivElement>) => {
+        event.stopPropagation();
+        if (this.props.onDragAndDrop) {
+          const { dragSelectedItem, dropSelectedItem } = this.state;
+          if (dragSelectedItem !== null && dropSelectedItem !== null) {
+            this.props.onDragAndDrop(dragSelectedItem, dropSelectedItem);
+          }
+        }
+      };
+    }
 
     let paddingLeft = level * IconExpandWidth;
     if (item.isLeaf) {
@@ -526,12 +555,22 @@ export class VirtualizedTree<
             !item.isLeaf && !sExpandedKeys.includes(item.key),
           "virtualized-tree-item-open":
             !item.isLeaf && sExpandedKeys.includes(item.key),
+          "is-drag": dragSelectedItem && dragSelectedItem.key === item.key,
+          "is-drop-not-leaf":
+            !item.isLeaf &&
+            dropSelectedItem &&
+            dropSelectedItem.key === item.key,
         })}
         style={{ paddingLeft: paddingLeft + TreePaddingLeft + "px" }}
-        draggable={itemDraggable}
         onClick={onClick}
         onDoubleClick={onDoubleClick}
         onContextMenu={onContextMenu}
+        draggable={itemDraggable}
+        onDragStart={onDragStart}
+        onDragEnd={onDragEnd}
+        onDragEnter={onDragEnter}
+        onDragOver={onDragOver}
+        onDrop={onDrop}
       >
         {lineArray.length ? (
           <div
@@ -574,20 +613,31 @@ export class VirtualizedTree<
           {rowRender ? (
             rowRender(item)
           ) : (
-            <Mark keywords={searchKeywords || ""} key={item.name}>
-              {item.name}
-            </Mark>
+            <Highlight
+              key={item.key}
+              text={item.name}
+              keywords={searchKeywords}
+            />
           )}
         </div>
       </div>
     );
   };
 
+  private onDragToRoot = () => {
+    if (this.props.onDragToRoot && this.state.dragSelectedItem !== null) {
+      this.props.onDragToRoot(this.state.dragSelectedItem);
+    }
+  };
+
   public render() {
     const { selectedKeys, loadingKeys } = this.props;
-    const { treeList } = this.state;
+    const { treeList, dragSelectedItem, dropSelectedItem } = this.state;
     return (
-      <div className={classNames("virtualized-tree", this.props.className)}>
+      <div
+        className={classNames("virtualized-tree", this.props.className)}
+        onDrop={this.onDragToRoot}
+      >
         <List
           selectedRows={[]}
           rowCount={treeList.length}
@@ -597,6 +647,8 @@ export class VirtualizedTree<
             treeList,
             selectedKeys,
             loadingKeys,
+            dragSelectedItem,
+            dropSelectedItem,
             ...this.props.invalidationProps,
           }}
         />

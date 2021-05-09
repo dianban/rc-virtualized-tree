@@ -1,6 +1,15 @@
+@keyframes spin {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(1turn);
+  }
+}
+
 .virtualized-tree {
   height: 100%;
-  font-size: 14px;
+  font-size: 12px;
   .virtualized-tree-item {
     display: flex;
     min-width: 100%;
@@ -76,15 +85,16 @@
     .content {
       flex: 1;
       width: 0;
+      display: flex;
     }
   }
 
-  //.loading-rotate {
-  //  width: 16px;
-  //  height: 16px;
-  //  .octicon {
-  //    height: 14px;
-  //    animation: spin 1s linear infinite;
-  //  }
-  //}
+  .loading-rotate {
+    display: flex;
+    .icon {
+      width: 16px;
+      height: 16px;
+      animation: spin 1s linear infinite;
+    }
+  }
 }
