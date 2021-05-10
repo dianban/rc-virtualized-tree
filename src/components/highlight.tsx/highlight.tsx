@@ -2,7 +2,7 @@ import * as React from "react";
 
 interface IProps {
   readonly text: string;
-  readonly keywords: string;
+  readonly keywords?: string;
 }
 
 interface IState {

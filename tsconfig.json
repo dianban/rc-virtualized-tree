@@ -2,7 +2,24 @@
   "compilerOptions": {
     "baseUrl": "./",
     "jsx": "react",
-    "esModuleInterop": true // 允许使用 import React from 否则对于没有默认导出的模块，必须使用 import * as React from
+    "outDir": "./dist",
+    "sourceMap": false,
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "allowJs": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "experimentalDecorators": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "removeComments": false,
+    "declaration": true,
+    "declarationMap": false,
+    "declarationDir": "./lib/types",
+    "lib": ["esnext", "dom"],
+    "types": ["node"]
   },
-  "include": ["src/*", "example/*"]
+  "include": ["src/*"],
+  "exclude": ["dist/**"]
 }

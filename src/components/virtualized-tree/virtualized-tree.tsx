@@ -343,7 +343,7 @@ export class VirtualizedTree<
     level: number,
     expandedKeys: ReadonlyArray<string>,
     keywords?: string,
-    searchKey?: string
+    searchKey: string = DefaultSearchKey
   ): ReadonlyArray<ITreeListItem<T>> => {
     if (keywords && this.props.searchOnlyShowMatch) {
       let res: ITreeListItem<T>[] = [];
@@ -478,9 +478,10 @@ export class VirtualizedTree<
 
     const onClick = (event: React.MouseEvent<HTMLDivElement>) => {
       event.stopPropagation();
-      if (this.props.onItemClick) {
+      const onItemClick = this.props.onItemClick;
+      if (onItemClick) {
         this.clickDebounce.queue(() => {
-          this.props.onItemClick(item);
+          onItemClick(item);
         });
       }
     };
@@ -500,11 +501,11 @@ export class VirtualizedTree<
       }
     };
 
-    let onDragStart = null;
-    let onDragEnd = null;
-    let onDragEnter = null;
-    let onDragOver = null;
-    let onDrop = null;
+    let onDragStart = undefined;
+    let onDragEnd = undefined;
+    let onDragEnter = undefined;
+    let onDragOver = undefined;
+    let onDrop = undefined;
 
     if (itemDraggable) {
       onDragStart = (event: React.MouseEvent<HTMLDivElement>) => {
