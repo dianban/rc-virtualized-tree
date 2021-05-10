@@ -2,8 +2,16 @@
 
 ### Getting Started
 
+Install `rc-virtualized-tree` using npm
+
 ```
 npm install rc-virtualized-tree --save
+```
+
+import style
+
+```
+import 'rc-virtualized-tree/styles.css'
 ```
 
 ### Prop Types
@@ -33,3 +41,91 @@ npm install rc-virtualized-tree --save
 | draggable           | ((item: T) => boolean) &#124; boolean     |           | 是否可拖拽                                           | false   |
 | onDragAndDrop       | (dragItem: T, dropItem: T) => void        |           | 拖放                                                 |         |
 | onDragToRoot        | (dragItem: T) => void                     |           |                                                      |         |
+
+### Demo
+
+```javascript
+import { VirtualizedTree } from "rc-virtualized-tree";
+import "rc-virtualized-tree/styles.css";
+
+export default class Demo extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      treeData: [
+        {
+          key: "1",
+          name: "1",
+          isLeaf: false,
+          children: [
+            {
+              key: "1-1",
+              name: "1-1",
+              isLeaf: false,
+              children: [
+                {
+                  key: "1-1-1",
+                  name: "1-1-1",
+                  isLeaf: true,
+                },
+                {
+                  key: "1-1-2",
+                  name: "1-1-2",
+                  isLeaf: false,
+                },
+              ],
+            },
+          ],
+        },
+        {
+          key: "2",
+          name: "2",
+          isLeaf: false,
+          children: [
+            {
+              key: "2-1",
+              name: "2-1",
+              isLeaf: true,
+            },
+            {
+              key: "2-2",
+              name: "2-2",
+              isLeaf: true,
+            },
+            {
+              key: "2-3",
+              name: "2-3",
+              isLeaf: true,
+            },
+          ],
+        },
+        {
+          key: "3",
+          name: "3",
+          isLeaf: false,
+          children: [
+            {
+              key: "3-1",
+              name: "3-1",
+              isLeaf: true,
+            },
+          ],
+        },
+      ],
+    };
+  }
+
+  itemClick = (item) => {
+    console.log("click", item);
+  };
+
+  render() {
+    return (
+      <VirtualizedTree
+        treeData={this.statetreeData}
+        onItemClick={this.itemClick}
+      />
+    );
+  }
+}
+```

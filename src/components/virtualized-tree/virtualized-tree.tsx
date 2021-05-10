@@ -550,7 +550,7 @@ export class VirtualizedTree<
 
     return (
       <div
-        className={classNames("virtualized-tree-item", rowClassName(), {
+        className={classNames("rc-virtualized-tree-item", rowClassName(), {
           active: isActive,
           "virtualized-tree-item-close":
             !item.isLeaf && !sExpandedKeys.includes(item.key),
@@ -636,7 +636,7 @@ export class VirtualizedTree<
     const { treeList, dragSelectedItem, dropSelectedItem } = this.state;
     return (
       <div
-        className={classNames("virtualized-tree", this.props.className)}
+        className={classNames("rc-virtualized-tree", this.props.className)}
         onDrop={this.onDragToRoot}
       >
         <List

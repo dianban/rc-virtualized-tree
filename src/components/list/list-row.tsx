@@ -76,7 +76,7 @@ export class ListRow extends React.Component<IListRowProps, {}> {
   public render() {
     const selected = this.props.selected;
     const className = classNames(
-      "list-item",
+      "rc-virtualized-list-item",
       { selected },
       { "not-selectable": this.props.selectable === false },
       this.props.className

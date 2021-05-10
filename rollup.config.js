@@ -4,6 +4,8 @@ import nodeResolve from "rollup-plugin-node-resolve";
 import commonjs from "rollup-plugin-commonjs";
 import ts from "rollup-plugin-typescript2";
 import scss from "rollup-plugin-scss";
+import postcss from "postcss";
+import autoprefixer from "autoprefixer";
 const getPath = (_path) => path.resolve(__dirname, _path);
 import packageJSON from "./package.json";
 
@@ -26,7 +28,11 @@ const commonConf = {
       exclude: "node_modules/**",
       extensions,
     }),
-    scss(),
+    scss({
+      output: "styles.css",
+      outputStyle: "compressed",
+      processor: () => postcss([autoprefixer()]),
+    }),
   ],
   output: {
     globals: {

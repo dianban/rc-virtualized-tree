@@ -119,7 +119,7 @@ export class List extends React.Component<IProps, IState> {
     );
 
     return (
-      <div id={this.props.id} className="list">
+      <div id={this.props.id} className="rc-virtualized-list">
         {content}
       </div>
     );
@@ -132,7 +132,7 @@ export class List extends React.Component<IProps, IState> {
   private renderGrid(width: number, height: number) {
     return (
       <Grid
-        className="list-grid"
+        className="rc-virtualized-list-grid"
         ref={this.onGridRef}
         autoContainerWidth={true}
         width={width}

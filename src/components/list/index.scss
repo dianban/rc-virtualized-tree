@@ -1,12 +1,12 @@
-.list {
+.rc-virtualized-list {
   height: 100%;
-  .list-item {
+  .rc-virtualized-list-item {
     &:focus {
       outline: none;
     }
   }
 
-  .list-grid {
+  .rc-virtualized-list-grid {
     &:focus {
       outline: none;
     }

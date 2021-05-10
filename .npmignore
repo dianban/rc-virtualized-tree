@@ -7,3 +7,6 @@ src
 package-lock.json
 tsconfig.json
 npm-debug.log*
+.idea/
+rollup.config.js
+.gitattributes
