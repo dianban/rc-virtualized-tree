@@ -6,6 +6,7 @@ import ts from "rollup-plugin-typescript2";
 import scss from "rollup-plugin-scss";
 import postcss from "postcss";
 import autoprefixer from "autoprefixer";
+import peerDepsExternal from "rollup-plugin-peer-deps-external";
 const getPath = (_path) => path.resolve(__dirname, _path);
 import packageJSON from "./package.json";
 
@@ -27,6 +28,9 @@ const commonConf = {
     babel({
       exclude: "node_modules/**",
       extensions,
+    }),
+    peerDepsExternal({
+      packageJsonPath: packageJSON,
     }),
     scss({
       output: "styles.css",
