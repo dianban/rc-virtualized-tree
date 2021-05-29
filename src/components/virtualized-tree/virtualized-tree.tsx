@@ -4,7 +4,9 @@ import classNames from "classnames";
 import { arrayEquals, Debounce, shallowEquals, Throttled } from "../../lib";
 import { List } from "../list";
 import { Icon, Symbol } from "../icon";
-import { Highlight } from "../highlight.tsx/highlight";
+import { Highlight } from "../highlight";
+import { Checkbox } from "../checkbox";
+import { getKeysMap, KeysMapItem } from "./lib";
 
 const DefaultSearchKey = "name";
 const IconExpandWidth = 16;
@@ -56,6 +58,10 @@ interface IProps<T> {
   readonly draggable: ((item: T) => boolean) | boolean;
   readonly onDragAndDrop?: (dragItem: T, dropItem: T) => void;
   readonly onDragToRoot?: (dragItem: T) => void;
+  readonly checkable: boolean;
+  readonly checkedKeys: Array<string>;
+  readonly onChecked?: (keys: Array<string>) => void;
+  readonly onCheck?: (key: string, checked: boolean) => void;
 }
 
 interface IState<T extends ITreeDataItem<T>> {
@@ -71,6 +77,7 @@ export class VirtualizedTree<
   private readonly updateListThrottled = new Throttled(200);
   private readonly updateListDebounce = new Debounce(250);
   private readonly clickDebounce = new Debounce(250);
+  private keysMap: KeysMapItem = {};
 
   public static defaultProps = {
     expandedKeys: [],
@@ -83,6 +90,8 @@ export class VirtualizedTree<
     forSearchKey: DefaultSearchKey,
     draggable: false,
     searchOnlyShowMatch: true,
+    checkable: false,
+    checkedKeys: [],
   };
 
   public constructor(props: IProps<T>) {
@@ -111,6 +120,12 @@ export class VirtualizedTree<
     } else {
       this.updateListThrottled.queue(() => {
         this.updateTreeList(this.props.treeData, this.state.sExpandedKeys);
+      });
+    }
+
+    if (this.props.checkable) {
+      setTimeout(() => {
+        this.keysMap = getKeysMap(this.props.treeData);
       });
     }
   }
@@ -149,6 +164,12 @@ export class VirtualizedTree<
       this.updateListThrottled.queue(() => {
         this.updateTreeList(this.props.treeData, this.state.sExpandedKeys);
       });
+
+      if (this.props.checkable) {
+        setTimeout(() => {
+          this.keysMap = getKeysMap(this.props.treeData);
+        });
+      }
     }
   }
 
@@ -421,6 +442,53 @@ export class VirtualizedTree<
     }
   };
 
+  private onCheckedChanged = (key: string, checked: boolean) => {
+    if (this.props.onCheck) {
+      this.props.onCheck(key, checked);
+    }
+
+    if (!this.props.onChecked) {
+      return;
+    }
+
+    let checkedKeys = this.props.checkedKeys.slice();
+    const mapCheckedKeys: { [key: string]: number } = {};
+    for (const k of checkedKeys) {
+      mapCheckedKeys[k] = 1;
+    }
+
+    const has = mapCheckedKeys[key];
+    const { parents, childKeys } = this.keysMap[key];
+
+    if (has && !checked) {
+      const mapParents: { [key: string]: number } = {};
+      const mapChildKeys: { [key: string]: number } = {};
+      for (const p of parents) {
+        mapParents[p] = 1;
+      }
+      for (const c of childKeys) {
+        mapChildKeys[c] = 1;
+      }
+
+      checkedKeys = checkedKeys.filter(
+        (k) => !(k === key || mapParents[k] || mapChildKeys[k])
+      );
+      this.props.onChecked(checkedKeys);
+    } else if (!has && checked) {
+      mapCheckedKeys[key] = 1;
+      childKeys.forEach((k) => (mapCheckedKeys[k] = 1));
+
+      for (let i = parents.length - 1; i >= 0; i--) {
+        const k = parents[i];
+        const cKeys = this.keysMap[k].childKeys;
+        if (cKeys.every((c) => mapCheckedKeys[c])) {
+          mapCheckedKeys[k] = 1;
+        }
+      }
+      this.props.onChecked(Object.keys(mapCheckedKeys));
+    }
+  };
+
   public rowRenderer = (row: number) => {
     const {
       selectedKeys,
@@ -431,6 +499,8 @@ export class VirtualizedTree<
       loadingKeys,
       defaultFolderIcon,
       defaultLeafIcon,
+      checkable,
+      checkedKeys,
     } = this.props;
 
     const {
@@ -501,6 +571,10 @@ export class VirtualizedTree<
       }
     };
 
+    const onChecked = (checked: boolean) => {
+      this.onCheckedChanged(item.key, checked);
+    };
+
     let onDragStart = undefined;
     let onDragEnd = undefined;
     let onDragEnter = undefined;
@@ -548,6 +622,8 @@ export class VirtualizedTree<
     const lineArray = showLevelLine ? new Array(level).fill(1) : [];
     const isActive = selectedKeys && selectedKeys.includes(item.key);
 
+    const checked = checkedKeys.includes(item.key);
+
     return (
       <div
         className={classNames("rc-virtualized-tree-item", rowClassName(), {
@@ -594,6 +670,14 @@ export class VirtualizedTree<
           )
         ) : null}
 
+        {checkable ? (
+          <Checkbox
+            className="row-checkbox"
+            onChanged={onChecked}
+            checked={checked}
+          />
+        ) : null}
+
         {item.isLeaf && defaultLeafIcon ? (
           <span className="row-icon">
             {typeof defaultLeafIcon === "function"
@@ -632,7 +716,7 @@ export class VirtualizedTree<
   };
 
   public render() {
-    const { selectedKeys, loadingKeys } = this.props;
+    const { selectedKeys, loadingKeys, checkedKeys } = this.props;
     const { treeList, dragSelectedItem, dropSelectedItem } = this.state;
     return (
       <div
@@ -650,6 +734,7 @@ export class VirtualizedTree<
             loadingKeys,
             dragSelectedItem,
             dropSelectedItem,
+            checkedKeys,
             ...this.props.invalidationProps,
           }}
         />
