@@ -71,7 +71,7 @@ interface IState<T extends ITreeDataItem<T>> {
   readonly dropSelectedItem: T | null;
 }
 
-export class VirtualizedTree<
+export default class VirtualizedTree<
   T extends ITreeDataItem<T>
 > extends React.Component<IProps<T>, IState<T>> {
   private readonly updateListThrottled = new Throttled(200);

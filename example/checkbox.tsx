@@ -1,5 +1,5 @@
 import * as React from "react";
-import { VirtualizedTree } from "../src/components/virtualized-tree";
+import VirtualizedTree from "../src/components/virtualized-tree";
 
 interface IState {
   readonly checkedKeys: string[];

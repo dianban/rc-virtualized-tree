@@ -42,10 +42,9 @@ import 'rc-virtualized-tree/styles.css'
 | onDragAndDrop       | (dragItem: T, dropItem: T) => void        |           | 拖放                                                 |         |
 | onDragToRoot        | (dragItem: T) => void                     |           |                                                      |         |
 
-### Demo
-
+### 示例
 ```javascript
-import { VirtualizedTree } from "rc-virtualized-tree";
+import VirtualizedTree from "rc-virtualized-tree";
 import "rc-virtualized-tree/styles.css";
 
 export default class Demo extends Component {
