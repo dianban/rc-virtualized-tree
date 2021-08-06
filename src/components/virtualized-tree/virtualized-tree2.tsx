@@ -1,12 +1,10 @@
 import * as React from "react";
 import { ReactNode } from "react";
 import classNames from "classnames";
-import { AutoSizer, Grid } from "react-virtualized";
 import { arrayEquals, Debounce, shallowEquals, Throttled } from "../../lib";
+import { List } from "../list";
 import { Icon, Symbol } from "../icon";
 import { Highlight } from "../highlight/highlight";
-import { VirtualizedTreeRow } from "./virtualized-tree-row";
-import { GridCellProps } from "react-virtualized/dist/es/Grid";
 
 const DefaultSearchKey = "name";
 const IconExpandWidth = 16;
@@ -67,10 +65,9 @@ interface IState<T extends ITreeDataItem<T>> {
   readonly dropSelectedItem: T | null;
 }
 
-export default class VirtualizedTree<
+export default class VirtualizedTree2<
   T extends ITreeDataItem<T>
 > extends React.Component<IProps<T>, IState<T>> {
-  private grid: Grid | null = null;
   private readonly updateListThrottled = new Throttled(200);
   private readonly updateListDebounce = new Debounce(250);
   private readonly clickDebounce = new Debounce(250);
@@ -634,34 +631,28 @@ export default class VirtualizedTree<
     }
   };
 
-  private renderGrid(width: number, height: number) {
-    return (
-      <div>
-        {width}
-        {height}
-      </div>
-    );
-  }
-
-  public renderContent() {
-    let content: JSX.Element[] | JSX.Element | null;
-    content = (
-      <AutoSizer>
-        {({ width, height }: { width: number; height: number }) =>
-          this.renderGrid(width, height)
-        }
-      </AutoSizer>
-    );
-    return <div className="rc-virtualized-list">{content}</div>;
-  }
-
   public render() {
+    const { selectedKeys, loadingKeys } = this.props;
+    const { treeList, dragSelectedItem, dropSelectedItem } = this.state;
     return (
       <div
         className={classNames("rc-virtualized-tree", this.props.className)}
         onDrop={this.onDragToRoot}
       >
-        {this.renderContent()}
+        <List
+          selectedRows={[]}
+          rowCount={treeList.length}
+          rowRenderer={this.rowRenderer}
+          rowHeight={this.props.rowHeight}
+          invalidationProps={{
+            treeList,
+            selectedKeys,
+            loadingKeys,
+            dragSelectedItem,
+            dropSelectedItem,
+            ...this.props.invalidationProps,
+          }}
+        />
       </div>
     );
   }

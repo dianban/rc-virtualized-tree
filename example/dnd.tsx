@@ -1,8 +1,5 @@
 import * as React from "react";
-import {
-  VirtualizedTree,
-  ITreeDataItem,
-} from "../src/components/virtualized-tree";
+import VirtualizedTree, { ITreeDataItem } from "../src";
 import { IListItem, listToTree } from "./lib";
 
 interface ITreeItem extends ITreeDataItem<ITreeItem> {}

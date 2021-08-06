@@ -1,17 +1,36 @@
 ## Virtualized Tree
 
-### Getting Started
+### 简介
+基于react-virtualized开发的虚拟目录树组件，支持typescript，支持关键字搜索、虚拟滚动、异步数据加载。
 
-Install `rc-virtualized-tree` using npm
+### 功能介绍
+- 提供默认的信息展示模版，支持自定义展示模版;
+- 提供默认的图标，包括"展开""收起"图标、叶子节点和非叶子节点的图标，支持传入自定义图标模版；
+- 支持拖拽功能，可通过开关控制是否可以拖拽，任何节点不可拖拽至叶子节点，父节点不可拖拽至子节点；
+- 支持点击事件、双击事件、右键事件等；
+- 支持关键字搜索，匹配关键字高亮展示，默认只展示匹配的项，自动展开包含匹配内容的节点，提供参数控制是否显示不匹配的项；
+- 支持传入数据控制展开节点；
+- 支持动态加载数据；
 
+### 如何开始
+使用npm安装
 ```
 npm install rc-virtualized-tree --save
 ```
+or
 
-import style
-
+使用yarn安装
+```
+yarn add rc-virtualized-tree --save
+```
+引入样式
 ```
 import 'rc-virtualized-tree/styles.css'
+```
+提供ES6，CommonJS和UMD构建
+```
+// 引入
+import VirtualizedTree from 'rc-virtualized-tree'
 ```
 
 ### Prop Types
@@ -42,11 +61,11 @@ import 'rc-virtualized-tree/styles.css'
 | onDragAndDrop       | (dragItem: T, dropItem: T) => void        |           | 拖放                                                 |         |
 | onDragToRoot        | (dragItem: T) => void                     |           |                                                      |         |
 
-### Demo
 
+### Demo
 ```javascript
-import { VirtualizedTree } from "rc-virtualized-tree";
 import "rc-virtualized-tree/styles.css";
+import { VirtualizedTree } from "rc-virtualized-tree";
 
 export default class Demo extends Component {
   constructor(props) {

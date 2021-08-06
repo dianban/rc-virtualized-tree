@@ -1,15 +1,15 @@
 {
-  "name": "rc-virtualized-tree",
-  "version": "1.0.7-beta",
-  "homepage": "https://github.com/dianban/rc-virtualized-tree",
-  "description": "",
+  "name": "@tencent/rc-virtualized-tree",
+  "version": "1.0.0",
+  "description": "react virtualized tree",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "start": "webpack-dev-server --config config/webpack.dev.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rm -fr dist && set NODE_ENV=production && rollup -c rollup.config.js"
+    "build": "rm -fr dist && set NODE_ENV=production && rollup -c rollup.config.js",
+    "build:dev": "set NODE_ENV=production && rollup -c rollup.config.js -w"
   },
   "files": [
     "dist",
@@ -22,7 +22,7 @@
     "search",
     "typescript"
   ],
-  "author": "",
+  "author": "tencent.front",
   "license": "ISC",
   "peerDependencies": {
     "react": "^16.8.4",

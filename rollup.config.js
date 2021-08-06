@@ -51,7 +51,7 @@ const commonConf = {
 const outputMap = [
   {
     file: packageJSON.main,
-    format: "cjs",
+    format: "umd",
   },
   {
     file: packageJSON.module,
