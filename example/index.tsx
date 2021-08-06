@@ -4,26 +4,34 @@ import { Default } from "./default";
 import { Search } from "./search";
 import { LargeAmountData } from "./large-amount-data";
 import { Dnd } from "./dnd";
+import { Checkbox } from "./checkbox";
 
 enum Types {
-  Default = "Default",
-  Search = "Search",
-  LargeAmountData = "LargeAmountData",
-  Dnd = "Dnd",
+  Default = "默认",
+  Search = "搜索",
+  LargeAmountData = "数据量较大测试",
+  Dnd = "拖拽",
+  Checkable = "选择",
 }
+
+interface IProps {}
 
 interface IState {
   readonly selected: Types | null;
   readonly types: ReadonlyArray<Types>;
 }
 
-export class Index extends React.Component<{}, IState> {
-  public constructor(props) {
+export class Index extends React.Component<IProps, IState> {
+  public constructor(props: IProps) {
     super(props);
-    const types = [];
-    for (const i in Types) {
-      types.push(i);
-    }
+
+    const types = [
+      Types.Default,
+      Types.Search,
+      Types.LargeAmountData,
+      Types.Dnd,
+      Types.Checkable,
+    ];
     this.state = {
       selected: types[0],
       types: types,
@@ -44,6 +52,9 @@ export class Index extends React.Component<{}, IState> {
         break;
       case Types.Dnd:
         content = <Dnd />;
+        break;
+      case Types.Checkable:
+        content = <Checkbox />;
         break;
     }
 

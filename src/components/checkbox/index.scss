@@ -1,0 +1,92 @@
+.rc-checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  .rc-checkbox-box {
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    position: relative;
+    .rc-checkbox-input {
+      margin: 0;
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+    }
+    .rc-checkbox-inner {
+      display: inline-block;
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      background-color: rgb(255, 255, 255);
+      border-collapse: separate;
+      border: 1px solid rgb(217, 217, 217);
+      border-radius: 2px;
+      &::after {
+        content: "";
+        display: table;
+        height: 9.14286px;
+        left: 22%;
+        opacity: 0;
+        position: absolute;
+        top: 50%;
+        transform: rotate(45deg) scale(0) translate(-50%, -50%);
+        width: 5.71429px;
+        border-width: 0 2px 2px 0;
+        border-style: solid solid;
+        border-color: rgb(255, 255, 255) rgb(255, 255, 255);
+        border-image: initial;
+        border-left: 0;
+        border-top: 0;
+        box-sizing: border-box;
+      }
+    }
+
+    &.rc-checkbox-checked {
+      .rc-checkbox-inner {
+        background-color: #1890ff;
+        &::after {
+          content: "";
+          display: table;
+          opacity: 1;
+          position: absolute;
+          transform: rotate(45deg) scale(1) translate(-50%, -50%);
+          border-width: 0 2px 2px 0;
+          border-style: solid solid;
+          border-color: rgb(255, 255, 255) rgb(255, 255, 255);
+          border-image: initial;
+          border-left: 0;
+          border-top: 0;
+        }
+      }
+    }
+
+    &.rc-checkbox-half-checked {
+      .rc-checkbox-inner {
+        &::after {
+          background-color: #1890ff;
+          content: "";
+          height: 8px;
+          left: 50%;
+          opacity: 1;
+          top: 50%;
+          transform: translate(-50%, -50%) scale(1);
+          width: 8px;
+          border-width: 0;
+          border-style: initial;
+          border-color: initial;
+          border-image: initial;
+        }
+      }
+    }
+  }
+}
