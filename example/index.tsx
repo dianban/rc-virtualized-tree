@@ -33,7 +33,7 @@ export class Index extends React.Component<IProps, IState> {
       Types.Checkable,
     ];
     this.state = {
-      selected: types[0],
+      selected: types[2],
       types: types,
     };
   }

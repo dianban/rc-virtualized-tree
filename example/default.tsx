@@ -134,6 +134,7 @@ export class Default extends React.Component<{}, {}> {
         onItemClick={this.itemClick}
         onItemDoubleClick={this.itemDoubleClick}
         onContextMenu={this.onContextMenu}
+        searchKeywords={"2"}
       />
     );
   }

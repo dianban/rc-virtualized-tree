@@ -89,22 +89,23 @@ export class List extends React.Component<IProps, IState> {
     if (selectable) {
       tabIndex = selected && this.props.selectedRows[0] === rowIndex ? 0 : -1;
     }
-    const element = this.props.rowRenderer(params.rowIndex);
-    const id = this.props.id ? `${this.props.id}-${rowIndex}` : undefined;
+    // const element = this.props.rowRenderer(params.rowIndex);
+    // const id = this.props.id ? `${this.props.id}-${rowIndex}` : undefined;
 
     return (
-      <ListRow
-        key={params.key}
-        id={id}
-        rowCount={this.props.rowCount}
-        rowIndex={rowIndex}
-        selected={selected}
-        onRowClick={this.onRowClick}
-        style={params.style}
-        tabIndex={tabIndex}
-        children={element}
-        selectable={selectable}
-      />
+        <div>123</div>
+      // <ListRow
+      //   key={params.key}
+      //   id={id}
+      //   rowCount={this.props.rowCount}
+      //   rowIndex={rowIndex}
+      //   selected={selected}
+      //   onRowClick={this.onRowClick}
+      //   style={params.style}
+      //   tabIndex={tabIndex}
+      //   children={element}
+      //   selectable={selectable}
+      // />
     );
   };
 
@@ -149,13 +150,13 @@ export class List extends React.Component<IProps, IState> {
     );
   }
 
-  private onRowClick = (row: number, event: React.MouseEvent<any>) => {
-    if (this.props.onRowClick) {
-      const rowCount = this.props.rowCount;
-      if (row < 0 || row >= rowCount) {
-        return;
-      }
-      this.props.onRowClick(row, { kind: "mouseclick", event });
-    }
-  };
+  // private onRowClick = (row: number, event: React.MouseEvent<any>) => {
+  //   if (this.props.onRowClick) {
+  //     const rowCount = this.props.rowCount;
+  //     if (row < 0 || row >= rowCount) {
+  //       return;
+  //     }
+  //     this.props.onRowClick(row, { kind: "mouseclick", event });
+  //   }
+  // };
 }

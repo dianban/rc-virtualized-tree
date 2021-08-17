@@ -16,7 +16,7 @@ export class LargeAmountData extends React.Component<IProps, IState> {
     super(props);
     this.state = {
       keywords: "",
-      treeData: initTreeData(5, 10000, 6),
+      treeData: initTreeData(5, 10000, 10),
     };
   }
 
